@@ -1,0 +1,80 @@
+--  DDL - Create
+create database store;
+USE store;
+-- 1 
+create table countries(
+code int  primary key ,
+name varchar(20) unique ,
+continent_name varchar(20) not null 
+);
+-- 2 
+create table users(
+id int primary key,
+full_name varchar(20),
+email varchar(20) unique ,
+gender varchar(1) check(gender='m' or gender='f'),
+date_of_birth varchar(20),
+created_at datetime ,
+country_code int ,
+foreign key (country_code) references countries(code)
+);
+-- 3 
+create table orders(
+id int primary key,
+user_id int ,
+status varchar(6) check(status='start' or status='finish'),
+created_at datetime ,
+foreign key (user_id) references users(id)
+);
+-- 4
+create table products(
+id int primary key ,
+price int default 0 ,
+name varchar(10) not null ,
+status varchar(10) check(status='valid' or status='expired'),
+created_at datetime
+);
+-- 5 
+create table order_products(
+order_id int ,
+prodect_id int ,
+quantity int default 0,
+primary key (order_id,prodect_id),
+foreign key (order_id) references orders(id),
+foreign key (prodect_id) references products(id)
+);
+-- DDL - Alter
+alter table users modify column created_at datetime default current_timestamp;
+alter table orders modify column created_at datetime default current_timestamp;
+alter table products modify column created_at datetime default current_timestamp;
+-- DML - Insert
+-- 1
+insert into countries values ('100','Noor','Europe');
+insert into countries values ('101','Ali','Asia');
+insert into countries values ('102','John','Australia');
+select * from countries;
+-- 2
+insert into users values ('100','Ahmed Ali','a@a.com','m','1994-02-1',default,'100');
+insert into users values ('101','Amal Mohammed','a@m.com','f','1997-10-24',default,'101');
+insert into users values ('102','Suad Ahmed','s@a.com','f','1990-07-07',default,'102');
+select * from users;
+-- 3
+insert into orders values ('108','100','start',default);
+insert into orders values ('289','101','finish',default);
+insert into orders values ('343','102','start',default);
+select * from orders;
+-- 4
+insert into products values ('10','30','rice','valid',default );
+insert into products values (13,'3','apple','valid',default);
+insert into products values (34,'8','cheese','expired',default);
+select * from products ;
+-- 5 
+insert into order_products values (108,10,1);
+insert into order_products values (289,13,2);
+insert into order_products values (343,34,4);
+select * from order_products;
+-- DML - Update
+update countries set continent_name='Asia' where code='100';
+-- DML - Delete
+delete from products where  id='100' ;
+
